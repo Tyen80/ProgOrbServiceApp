@@ -1,3 +1,4 @@
+using ServiceApp.Application;
 using ServiceApp.Infrastructure;
 using ServiceApp.WebUI.Components;
 
@@ -9,6 +10,7 @@ builder.Services.AddRazorComponents()
     .AddInteractiveWebAssemblyComponents();
 
 builder.Services.AddInfrastructure(builder.Configuration);
+builder.Services.AddApplication();
 
 var app = builder.Build();
 
