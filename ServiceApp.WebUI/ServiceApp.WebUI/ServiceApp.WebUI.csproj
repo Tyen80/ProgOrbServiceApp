@@ -4,6 +4,7 @@
     <TargetFramework>net8.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+    <UserSecretsId>67ea216f-4d73-4031-9612-2fcb1bedca04</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
@@ -11,5 +12,9 @@
     <ProjectReference Include="..\ServiceApp.WebUI.Client\ServiceApp.WebUI.Client.csproj" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="8.0.8" />
   </ItemGroup>
+
+	<ItemGroup>
+	<PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.8" />	
+	</ItemGroup>
 
 </Project>

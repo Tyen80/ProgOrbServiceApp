@@ -1,4 +1,4 @@
-using ServiceApp.WebUI.Client.Pages;
+using ServiceApp.Infrastructure;
 using ServiceApp.WebUI.Components;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -7,6 +7,8 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents()
     .AddInteractiveWebAssemblyComponents();
+
+builder.Services.AddInfrastructure(builder.Configuration);
 
 var app = builder.Build();
 
