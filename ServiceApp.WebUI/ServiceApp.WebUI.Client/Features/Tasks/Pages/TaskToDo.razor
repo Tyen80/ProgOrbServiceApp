@@ -1,0 +1,84 @@
+﻿@page "/tasks/todo"
+@page "/tasks/todo/{Id:int}"
+@inject ITaskService TaskService
+@inject NavigationManager NavigationManager
+@rendermode @(new InteractiveWebAssemblyRenderMode(false))
+
+<div class="container-xxl">
+    <div class="col-12 col-lg-6">
+
+        <div class="text-center">
+            <h3>Oppgaver</h3>
+        </div>
+        @if(_taskToDoModel != null)
+        {
+            <EditForm Model="_taskToDoModel" OnValidSubmit="CreateTask">
+
+                <div class="mb-3">
+                    <label class="form-label">Tittel</label>
+                    <InputText class="form-control" @bind-Value="_taskToDoModel.Title" />
+                </div>
+                 <div class="mb-3">
+                     <label class="form-label">Beskrivelse</label>
+                    <InputTextArea class="form-control" @bind-Value="_taskToDoModel.Description" />
+                </div>
+                 <div class="mb-3">
+                     <label class="form-label">Peng</label>
+                    <InputNumber class="form-control" @bind-Value="_taskToDoModel.Amount" />
+                </div>
+                <button class="btn btn-primary" type="submit">Lagre</button>
+        
+            </EditForm>
+            <button class="btn btn-danger mt-3" @onclick="() => DeleteTask(_taskToDoModel.Id)">Slett</button>
+        }
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public int Id { get; set; }
+
+    private TaskToDoModel _taskToDoModel = new TaskToDoModel();
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if (Id > 0)
+        {
+            var result = await TaskService.GetTaskById(Id);
+            if (result.Success && result.Value != null)
+            {
+                _taskToDoModel = result.Value;
+            }
+            else
+            {
+                _taskToDoModel = new TaskToDoModel();
+            }
+        }
+        else
+        {
+            _taskToDoModel = new TaskToDoModel();
+        }
+    }
+
+    private async Task CreateTask()
+    {
+        if(Id > 0)
+        {
+            await TaskService.UpdateTask(_taskToDoModel);
+        }
+        else
+        {
+            await TaskService.CreateTask(_taskToDoModel);
+        }      
+        NavigationManager.NavigateTo("/tasks");
+    }
+
+    private async Task DeleteTask(int id)
+    {
+        var success = await TaskService.DeleteTask(id);
+        if (success)
+        {
+            NavigationManager.NavigateTo("/tasks");
+        }
+    }
+}

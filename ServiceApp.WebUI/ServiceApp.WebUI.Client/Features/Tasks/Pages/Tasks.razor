@@ -1,0 +1,33 @@
+﻿@page "/tasks"
+@using ServiceApp.Application.Tasks
+@inject ITaskService TaskService
+@rendermode @(new InteractiveWebAssemblyRenderMode(false))
+
+@if(_taskResponses == null)
+{
+    <p>Loading...</p>
+}
+else
+{
+    @foreach (var task in _taskResponses)
+    {
+        <div class="card">
+            <div class="card-body">
+                <a href="/tasks/todo/@task.Id"><h5 class="card-title">@task.Title</h5></a>
+                <p class="card-text">@task.Description</p>
+                <p class="card-text">@task.Amount</p>
+            </div>
+        </div>
+    }
+}
+
+
+
+@code {
+    private List<TaskResponse>? _taskResponses = new List<TaskResponse>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        _taskResponses = await TaskService.GetAllTasks();
+    }
+}
