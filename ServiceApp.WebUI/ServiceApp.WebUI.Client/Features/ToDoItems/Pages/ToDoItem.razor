@@ -1,0 +1,104 @@
+﻿@page "/todoitem"
+@page "/todoitem/{Id:int}"
+@inject IToDoItemService ToDoItemService
+@inject ITaskService TaskService
+@inject NavigationManager NavigationManager 
+@rendermode @(new InteractiveWebAssemblyRenderMode(false))
+
+
+
+<div class="col-12 col-lg-6">
+    <div class="text-center">
+        <h3>Oppgaver</h3>
+    </div>
+    @if(_toDoItemModel != null)
+    {
+        <EditForm Model="_toDoItemModel" OnValidSubmit="HandleValidSubmit">
+            <div class="mb-3">
+               <label class="form-label">Oppgaver</label>
+               <InputSelect class="form-control mb-3" @bind-Value="_toDoItemModel.TaskId">
+                    <option value="">Velg oppgave</option>
+                   @if(_taskResponses == null)
+                   {
+                       <option>Loading...</option>
+                   }
+                   else
+                   {
+                       @foreach(var task in _taskResponses)
+                       {                          
+                           <option value="@task.Id">
+                               @task.Title
+                               @task.Description
+                           </option>
+                       }
+                   }               
+               </InputSelect>
+               <div class="mb-3">
+                   <label class="form-label">Velg dato</label>
+                   <InputDate @bind-Value="_toDoItemModel.DueDate" />
+               </div>
+               <label class="form-label">Merk ferdig</label>
+               <InputCheckbox @bind-Value="_toDoItemModel.IsComplete" />
+            </div>
+
+            <button class="btn btn-primary" type="submit">Lagre</button>
+
+        </EditForm>
+
+        <button class="btn btn-danger" @onclick="() => DeleteToDoItem(_toDoItemModel.Id)">Slett</button>
+    }
+
+</div>
+
+@code {
+    [Parameter]
+    public int Id { get; set; }
+
+    private ToDoItemModel _toDoItemModel = new ToDoItemModel();
+    private List<TaskResponse>? _taskResponses = new List<TaskResponse>();
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if(Id > 0)
+        {  
+            var result = await ToDoItemService.GetToDoItemById(Id);
+            if (result.Success && result.Value != null)
+            {
+                _toDoItemModel = result.Value;
+            }
+            else
+            {
+                // Handle the error case, e.g., show a message to the user
+                _toDoItemModel = new ToDoItemModel();
+            }
+        }
+        else
+        {
+            _toDoItemModel = new ToDoItemModel();
+        }
+        _taskResponses = await TaskService.GetAllTasks();
+
+    }
+
+    private async Task HandleValidSubmit()
+    {
+        if(Id > 0)
+        {
+            await ToDoItemService.UpdateToDoItem(_toDoItemModel);
+        }
+        else
+        {
+            await ToDoItemService.CreateToDoItem(_toDoItemModel);
+        }
+        NavigationManager.NavigateTo("/todoitems");
+    }
+
+    private async Task DeleteToDoItem(int id)
+    {
+        if(Id > 0)
+        {
+            await ToDoItemService.DeleteToDoItem(id);
+            NavigationManager.NavigateTo("/todoitems");
+        }
+    }
+}

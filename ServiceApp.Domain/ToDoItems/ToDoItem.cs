@@ -6,6 +6,7 @@ public class ToDoItem : Entity
 {
     public int TaskId { get; set; }
     public bool IsComplete { get; set; } = false;
+    public DateTime DueDate { get; set; } = DateTime.Now;
     public TaskToDo? Task { get; set; }
 
 }

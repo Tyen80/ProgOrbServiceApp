@@ -1,27 +1,41 @@
 ﻿@page "/tasks"
-@using ServiceApp.Application.Tasks
 @inject ITaskService TaskService
+@inject NavigationManager NavigationManager
 @rendermode @(new InteractiveWebAssemblyRenderMode(false))
 
-@if(_taskResponses == null)
-{
-    <p>Loading...</p>
-}
-else
-{
-    @foreach (var task in _taskResponses)
+<div class="container-xxl">
+
+    <button class="btn btn-primary mb-3" type="button" @onclick="CreateTask">Lag ny oppgave</button>
+
+    @if(_taskResponses == null)
     {
-        <div class="card">
-            <div class="card-body">
-                <a href="/tasks/todo/@task.Id"><h5 class="card-title">@task.Title</h5></a>
-                <p class="card-text">@task.Description</p>
-                <p class="card-text">@task.Amount</p>
-            </div>
+        <p>Loading...</p>
+    }
+    else
+    {
+        <div class="d-flex flex-wrap">            
+            @foreach (var task in _taskResponses)
+            {
+                <div class="col-12 col-lg-6 col-lg-3 mb-3">                  
+                    <div class="card mx-2 my-2">                      
+                        <div class="card-header">
+                            <a href="/tasks/todo/@task.Id"><h5 class="card-title">@task.Title</h5></a>
+                        </div>
+                        <div class="card-body">
+                            <p class="card-text">
+                                <strong>Beskrivelse:</strong> @task.Description
+                            </p>
+                            <p class="card-text">
+                                <strong>Kr:</strong> @task.Amount
+                            </p>
+                            <a href="/tasks/todo/@task.Id" class="btn btn-primary">View Task</a>
+                        </div>
+                    </div>
+                </div>
+            }
         </div>
     }
-}
-
-
+</div>
 
 @code {
     private List<TaskResponse>? _taskResponses = new List<TaskResponse>();
@@ -29,5 +43,10 @@ else
     protected override async Task OnInitializedAsync()
     {
         _taskResponses = await TaskService.GetAllTasks();
+    }
+
+    private void CreateTask()
+    {
+        NavigationManager.NavigateTo("/tasks/todo");
     }
 }

@@ -9,11 +9,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ServiceApp.WebUI", "Service
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ServiceApp.WebUI.Client", "ServiceApp.WebUI\ServiceApp.WebUI.Client\ServiceApp.WebUI.Client.csproj", "{EC53ECE0-C6B7-4B61-AA89-CCD3AC59B401}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ServiceApp.Domain", "ServiceApp.Domain\ServiceApp.Domain.csproj", "{ECAD3C3D-4114-4D01-B547-0D2580AB9086}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ServiceApp.Domain", "ServiceApp.Domain\ServiceApp.Domain.csproj", "{ECAD3C3D-4114-4D01-B547-0D2580AB9086}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ServiceApp.Application", "ServiceApp.Application\ServiceApp.Application.csproj", "{79A11CC3-07C8-47B9-8537-B98DABC383C8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ServiceApp.Application", "ServiceApp.Application\ServiceApp.Application.csproj", "{79A11CC3-07C8-47B9-8537-B98DABC383C8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ServiceApp.Infrastructure", "ServiceApp.Infrastructure\ServiceApp.Infrastructure.csproj", "{02C46348-F01B-408A-88FA-B7CFD2595640}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ServiceApp.Infrastructure", "ServiceApp.Infrastructure\ServiceApp.Infrastructure.csproj", "{02C46348-F01B-408A-88FA-B7CFD2595640}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
