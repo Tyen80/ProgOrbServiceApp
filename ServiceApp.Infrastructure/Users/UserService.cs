@@ -35,6 +35,12 @@ public class UserService : IUserService
         return user.Id;
     }
 
+    public async Task<string> GetUserId(string userId)
+    {
+        var user = await GetUserAsync(userId);
+        return user?.Id ?? string.Empty;
+    }
+
     public async Task<bool> IsCurrentUserInToleAsync(string role)
     {
         var user = await GetCurrentUserAsync();
@@ -52,5 +58,10 @@ public class UserService : IUserService
 
         var user = await _userManager.GetUserAsync(httpContext.User);
         return user;
+    }
+
+    private async Task<User?> GetUserAsync(string userId)
+    {
+        return await _userManager.FindByIdAsync(userId);
     }
 }

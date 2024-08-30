@@ -5,9 +5,11 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using ServiceApp.Application.Authentication;
+using ServiceApp.Domain.Email;
 using ServiceApp.Domain.Tasks;
 using ServiceApp.Domain.ToDoItems;
 using ServiceApp.Infrastructure.Authentication;
+using ServiceApp.Infrastructure.Email;
 using ServiceApp.Infrastructure.Repositories;
 using ServiceApp.Infrastructure.Users;
 
@@ -24,6 +26,7 @@ public static class DependencyInjection
         services.AddScoped<ITaskRepository, TaskRepository>();
         services.AddScoped<IToDoItemRepository, ToDoItemRepository>();
         services.AddScoped<IUserService, UserService>();
+        services.AddScoped<IEmailService, EmailService>();
 
 
         AddAuthentication(services);
@@ -35,6 +38,11 @@ public static class DependencyInjection
     {
         services.AddScoped<ILoginUserService, LoginUserService>();
         services.AddScoped<IRegisterUserService, RegisterUserService>();
+        services.AddScoped<IEmailConfirmService, EmailConfirmService>();
+        services.AddScoped<IFamilyExistService, FamilyExistService>();
+        services.AddScoped<IEmailManagerService, EmailManagerService>();
+        services.AddScoped<IUserRolesService, UserRolesService>();
+
 
         services.AddScoped<AuthenticationStateProvider, ServerAuthenticationStateProvider>();
         services.AddCascadingAuthenticationState();

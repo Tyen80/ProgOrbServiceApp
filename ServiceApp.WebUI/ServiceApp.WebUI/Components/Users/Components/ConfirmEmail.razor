@@ -1,0 +1,52 @@
+﻿@page "/Account/ConfirmEmail"
+@using ServiceApp.Application.Emails.EmailConfirm
+
+@inject ISender Sender
+@inject NavigationManager NavigationManager
+@rendermode InteractiveServer
+
+
+<p>Vi har verifisert eposten din. Du kan nå logge inn.</p>
+<button class="btn btn-primary" @onclick="NavigateToLogin">Logg inn</button>
+
+@code {
+    [SupplyParameterFromQuery]
+    public string? Code { get; set; }
+
+    private string ErrorMessage { get; set; } = string.Empty;
+
+    [SupplyParameterFromQuery]
+    private string? UserId { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+
+        if (UserId is null || Code is null)
+        {
+            NavigationManager.NavigateTo("/");
+            return;
+        }
+
+        var command = new EmailConfirmCommand
+            {
+                Token = Code,
+                UserId = UserId
+            };
+
+        var result = await Sender.Send(command);
+        if (result.Success)
+        {
+            //NavigationManager.NavigateTo("/Account/Login");
+        }
+        else
+        {
+            ErrorMessage = result.Error ?? "bekreftelsen feilet";
+        }
+    }
+
+    private void NavigateToLogin()
+    {
+        NavigationManager.NavigateTo("/login");
+    }
+
+}
