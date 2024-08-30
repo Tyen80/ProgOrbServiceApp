@@ -1,0 +1,59 @@
+﻿@page "/login"
+@inject ISender Sender
+@inject NavigationManager NavigationManager
+
+<h3>LoginUser</h3>
+
+<div class="col-6">  
+
+    <div class="card mb-3">
+        <div class="card-body">
+            <h5 class="card-title">Don't have an account?</h5>
+            <p class="card-text">Register now to get started!</p>
+            <a href="register" class="btn btn-primary">Register</a>
+        </div>
+    </div>
+
+    <EditForm Model="model" FormName="LoginUserForm" OnValidSubmit="HandleValidSubmit"> 
+        <DataAnnotationsValidator />
+
+        <div class="mb-3">
+            <label for="UserName" class="form-label">UserName</label>
+            <InputText id="UserName" class="form-control" @bind-Value="model.UserName" />
+            <ValidationMessage For="@(() => model.UserName)" />
+         </div>
+        <div class="mb-3">
+            <label for="Password" class="form-label">Password</label>
+            <InputText type="password" id="Password" class="form-control" @bind-Value="model.Password" />
+            <ValidationMessage For="@(() => model.Password)" />
+        </div>
+        <button type="submit" class="btn btn-primary">Logg inn</button>
+    </EditForm>
+
+    <span class="text-danger">@ErrorMessage</span>
+</div>
+@code {
+    [SupplyParameterFromForm(FormName = "LoginUserForm")]
+    public LoginUserModel model { get; set; } = new LoginUserModel();
+
+    private string ErrorMessage { get; set; } = string.Empty;
+
+    private async Task HandleValidSubmit()
+    {
+        var command = new LoginUserCommand
+        {
+            UserName = model.UserName,
+            Password = model.Password
+        };
+
+        var result = await Sender.Send(command);
+        if(result.Success)
+        {
+            NavigationManager.NavigateTo("/");
+        }
+        else
+        {
+            ErrorMessage = result.Error ?? "An error occurred";
+        }
+    }
+}

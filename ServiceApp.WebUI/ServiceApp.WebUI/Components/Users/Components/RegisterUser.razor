@@ -1,0 +1,61 @@
+﻿@page "/register"
+@inject ISender Sender
+@inject NavigationManager NavigationManager
+
+<h3>RegisterUser</h3>
+
+<EditForm Model="model" FormName="RegisterUserForm" OnValidSubmit="HandleValidSubmit">
+    <DataAnnotationsValidator />
+
+    <div class="mb-3">
+        <label for="UserName" class="form-label">UserName</label>
+        <InputText id="UserName" class="form-control" @bind-Value="model.UserName" />
+        <ValidationMessage For="@(() => model.UserName)" />
+    </div>
+    <div class="mb-3">
+        <label for="Email" class="form-label">Email</label>
+        <InputText id="Email" class="form-control" @bind-Value="model.Email" />
+        <ValidationMessage For="@(() => model.Email)" />
+    </div>
+    <div class="mb-3">
+        <label for="Password" class="form-label">Password</label>
+        <InputText id="Password" class="form-control" @bind-Value="model.Password" />
+        <ValidationMessage For="@(() => model.Password)" />
+    </div>
+    <div class="mb-3">
+        <label for="ConfirmPassword" class="form-label">ConfirmPassword</label>
+        <InputText id="ConfirmPassword" class="form-control" @bind-Value="model.ConfirmPassword" />
+        <ValidationMessage For="@(() => model.ConfirmPassword)" />
+    </div>
+
+    <button type="submit" class="btn btn-primary">Submit</button>
+
+</EditForm>
+
+@code {
+    [SupplyParameterFromForm(FormName = "RegisterUserForm")]
+    public RegisterUserModel model { get; set; } = new RegisterUserModel();
+
+    private string ErrorMessage { get; set; } = string.Empty;
+
+    private async Task HandleValidSubmit()
+    {
+        var command = new RegisterUserCommand
+        {
+            UserName = model.UserName,
+            Email = model.Email,
+            Password = model.Password            
+        };
+
+        var result = await Sender.Send(command);
+        if(result.Success)
+        {
+            NavigationManager.NavigateTo("/login");
+        }
+        else
+        {
+            ErrorMessage = result.Error ?? "An error occurred";
+        }
+    }
+
+}

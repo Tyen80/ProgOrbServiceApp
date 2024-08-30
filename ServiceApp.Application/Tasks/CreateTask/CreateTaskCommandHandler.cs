@@ -1,12 +1,9 @@
-﻿using Mapster;
-using ServiceApp.Application.Abstractions.RequestHandling;
-using ServiceApp.Domain.Tasks;
-
-namespace ServiceApp.Application.Tasks.CreateTask;
+﻿namespace ServiceApp.Application.Tasks.CreateTask;
 
 public class CreateTaskCommandHandler : ICommandHandler<CreateTaskCommand, TaskResponse>
 {
     private readonly ITaskRepository _taskRepository;
+
 
     public CreateTaskCommandHandler(ITaskRepository taskRepository)
     {

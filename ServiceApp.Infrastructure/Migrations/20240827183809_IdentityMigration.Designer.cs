@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ServiceApp.Infrastructure;
 
@@ -11,9 +12,11 @@ using ServiceApp.Infrastructure;
 namespace ServiceApp.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240827183809_IdentityMigration")]
+    partial class IdentityMigration
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -201,10 +204,6 @@ namespace ServiceApp.Infrastructure.Migrations
                     b.Property<DateTime>("DueDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("FamilyId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<bool>("IsComplete")
                         .HasColumnType("bit");
 
@@ -212,7 +211,6 @@ namespace ServiceApp.Infrastructure.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("UserId")
-                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
@@ -224,7 +222,7 @@ namespace ServiceApp.Infrastructure.Migrations
                     b.ToTable("ToDoItems");
                 });
 
-            modelBuilder.Entity("ServiceApp.Infrastructure.Users.User", b =>
+            modelBuilder.Entity("ServiceApp.Infrastructure.Authentication.User", b =>
                 {
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
@@ -242,10 +240,6 @@ namespace ServiceApp.Infrastructure.Migrations
 
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("bit");
-
-                    b.Property<string>("FamilyId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("bit");
@@ -304,7 +298,7 @@ namespace ServiceApp.Infrastructure.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
                 {
-                    b.HasOne("ServiceApp.Infrastructure.Users.User", null)
+                    b.HasOne("ServiceApp.Infrastructure.Authentication.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -313,7 +307,7 @@ namespace ServiceApp.Infrastructure.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
-                    b.HasOne("ServiceApp.Infrastructure.Users.User", null)
+                    b.HasOne("ServiceApp.Infrastructure.Authentication.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -328,7 +322,7 @@ namespace ServiceApp.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("ServiceApp.Infrastructure.Users.User", null)
+                    b.HasOne("ServiceApp.Infrastructure.Authentication.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -337,7 +331,7 @@ namespace ServiceApp.Infrastructure.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
                 {
-                    b.HasOne("ServiceApp.Infrastructure.Users.User", null)
+                    b.HasOne("ServiceApp.Infrastructure.Authentication.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -352,16 +346,14 @@ namespace ServiceApp.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("ServiceApp.Infrastructure.Users.User", null)
+                    b.HasOne("ServiceApp.Infrastructure.Authentication.User", null)
                         .WithMany("ToDoItems")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("UserId");
 
                     b.Navigation("Task");
                 });
 
-            modelBuilder.Entity("ServiceApp.Infrastructure.Users.User", b =>
+            modelBuilder.Entity("ServiceApp.Infrastructure.Authentication.User", b =>
                 {
                     b.Navigation("ToDoItems");
                 });

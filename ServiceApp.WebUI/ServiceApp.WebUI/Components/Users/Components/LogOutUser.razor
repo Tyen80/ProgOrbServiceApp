@@ -1,0 +1,14 @@
+﻿@page "/logout"
+@using ServiceApp.Infrastructure.Users
+@inject SignInManager<User> SignInManager 
+@inject NavigationManager NavigationManager
+
+<h3>LogOutUser</h3>
+
+@code {
+    protected override async Task OnInitializedAsync()
+    {
+        await SignInManager.SignOutAsync();
+        NavigationManager.NavigateTo("/");
+    }
+}

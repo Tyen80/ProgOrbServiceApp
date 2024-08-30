@@ -1,14 +1,17 @@
 ﻿
+using ServiceApp.Application.Authentication;
 using ServiceApp.Domain.ToDoItems;
 
 namespace ServiceApp.Application.ToDoItems.CreateToDoItem;
 public class CreateToDoItemCommandHandler : ICommandHandler<CreateToDoItemCommand, ToDoItemResponse>
 {
     private readonly IToDoItemRepository _toDoItemRepository;
+    private readonly IUserService _userService;
 
-    public CreateToDoItemCommandHandler(IToDoItemRepository toDoItemRepository)
+    public CreateToDoItemCommandHandler(IToDoItemRepository toDoItemRepository, IUserService userService)
     {
         _toDoItemRepository = toDoItemRepository;
+        _userService = userService;
     }
 
     public async Task<Result<ToDoItemResponse>> Handle(CreateToDoItemCommand request, CancellationToken cancellationToken)
@@ -16,6 +19,7 @@ public class CreateToDoItemCommandHandler : ICommandHandler<CreateToDoItemComman
         try
         {
             var newToDoItem = request.Adapt<ToDoItem>();
+
             var createdToDoItem = await _toDoItemRepository.CreateAsync(newToDoItem);
             return createdToDoItem.Adapt<ToDoItemResponse>();
         }

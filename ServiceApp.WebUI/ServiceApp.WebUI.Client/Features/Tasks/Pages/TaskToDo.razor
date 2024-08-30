@@ -1,5 +1,6 @@
 ﻿@page "/tasks/todo"
 @page "/tasks/todo/{Id:int}"
+@using Microsoft.AspNetCore.Components.Authorization
 @inject ITaskService TaskService
 @inject NavigationManager NavigationManager
 @rendermode @(new InteractiveWebAssemblyRenderMode(false))
@@ -28,7 +29,9 @@
                 <button class="btn btn-primary" type="submit">Lagre</button>
         
             </EditForm>
-            <button class="btn btn-danger mt-3" @onclick="() => DeleteTask(_taskToDoModel.Id)">Slett</button>
+           
+                <button class="btn btn-danger mt-3" @onclick="() => DeleteTask(_taskToDoModel.Id)">Slett</button>
+          
         }
     </div>
 </div>

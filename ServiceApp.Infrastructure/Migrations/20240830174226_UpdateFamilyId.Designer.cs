@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ServiceApp.Infrastructure;
 
@@ -11,9 +12,11 @@ using ServiceApp.Infrastructure;
 namespace ServiceApp.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240830174226_UpdateFamilyId")]
+    partial class UpdateFamilyId
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -200,10 +203,6 @@ namespace ServiceApp.Infrastructure.Migrations
 
                     b.Property<DateTime>("DueDate")
                         .HasColumnType("datetime2");
-
-                    b.Property<string>("FamilyId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("IsComplete")
                         .HasColumnType("bit");

@@ -16,6 +16,16 @@ public class ToDoItemRepository : IToDoItemRepository
         return await _context.ToDoItems.ToListAsync();
     }
 
+    public Task<List<ToDoItem>> GetAllActiveByFamilyId(string FamilyId)
+    {
+        return _context.ToDoItems.Include(t => t.Task).Where(x => x.IsComplete == false && x.FamilyId == FamilyId).ToListAsync();
+    }
+
+    public Task<List<ToDoItem>> GetAllActiveByUserId(string UserId)
+    {
+        return _context.ToDoItems.Include(t => t.Task).Where(x => x.IsComplete == false && x.UserId == UserId).ToListAsync();
+    }
+
     public async Task<List<ToDoItem>> GetAllActiveAsync()
     {
         return await _context.ToDoItems.Include(t => t.Task).Where(x => x.IsComplete == false).ToListAsync();
