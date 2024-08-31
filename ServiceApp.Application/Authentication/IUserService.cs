@@ -5,4 +5,5 @@ public interface IUserService
     Task<string> GetCurrentFamilyIdAsync();
     Task<string> GetUserId(string userId);
     Task<bool> IsCurrentUserInToleAsync(string role);
+
 }

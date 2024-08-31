@@ -13,6 +13,6 @@ public class FamilyExistService : IFamilyExistService
 
     public async Task<bool> FamilyExists(string familyId)
     {
-        return await _context.Users.AnyAsync(f => f.Id == familyId);
+        return await _context.Users.AnyAsync(f => f.FamilyId == familyId);
     }
 }

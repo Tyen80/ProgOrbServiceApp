@@ -14,4 +14,7 @@ public class RegisterUserModel
     [Compare("Password", ErrorMessage = "Password does not match")]
     public string ConfirmPassword { get; set; } = string.Empty;
 
+    public string? FamilyId { get; set; }
+    public string? Role { get; set; }
+
 }

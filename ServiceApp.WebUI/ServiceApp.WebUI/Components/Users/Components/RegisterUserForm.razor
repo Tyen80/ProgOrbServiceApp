@@ -1,0 +1,28 @@
+﻿<div class="mb-3">
+    <label class="form-label" for="UserName">Bruker navn</label>
+    <InputText id="UserName" @bind-Value="registerUser.UserName" class="form-control" />
+    <ValidationMessage For="@(() => registerUser.UserName)" />
+</div>
+<div class="mb-3">
+    <label class="form-label" for="UserEmail">Epost</label>
+    <InputText id="UserEmail" @bind-Value="registerUser.Email" class="form-control" />
+    <ValidationMessage For="@(() => registerUser.Email)" />
+</div>
+<div class="mb-3">
+    <label class="form-label" for="Password">Passord</label>
+    <InputText id="Password" type="password" @bind-Value="registerUser.Password" class="form-control" />
+    <ValidationMessage For="@(() => registerUser.Password)" />
+</div>
+<div class="mb-3">
+    <label class="form-label" for="ConfirmPassword">Passord</label>
+    <InputText id="ConfirmPassword" type="password" @bind-Value="registerUser.ConfirmPassword" class="form-control" />
+    <ValidationMessage For="@(() => registerUser.ConfirmPassword)" />
+</div>
+
+<button type="submit" class="btn btn-primary mt-3">Register</button>
+
+@code {
+    [Parameter]
+    public RegisterUserModel registerUser { get; set; } = new();
+
+}

@@ -18,7 +18,7 @@ public class RegisterUserService : IRegisterUserService
         _userRolesService = userRolesService;
     }
 
-    public async Task<RegisterUserResponse> RegisterUserAsync(string userName, string email, string password, string familyId)
+    public async Task<RegisterUserResponse> RegisterNewUserAsync(string userName, string email, string password, string familyId)
     {
         bool isNewFamily = string.IsNullOrWhiteSpace(familyId);
         bool familyExists = !isNewFamily && await _familyExistService.FamilyExists(familyId);
@@ -41,9 +41,42 @@ public class RegisterUserService : IRegisterUserService
             };
         }
 
-        // Determine the role based on whether the family exists or if it's a new family
-        string role = isNewFamily || !familyExists ? "FamilyAdmin" : "FamilyMember";
-        await _userRolesService.AddRoleToTheUser(user, role); // Adjusted to pass the role directly
+        // Use the provided role directly
+        await _userRolesService.AddRoleToTheUser(user, "FamilyAdmin");
+
+        await _emailManagerService.SendConfirmationEmailAsync(user);
+
+        return new RegisterUserResponse
+        {
+            Succeeded = true,
+            Errors = new List<string>()
+        };
+    }
+
+    public async Task<RegisterUserResponse> RegisterInvitedUserAsync(string userName, string email, string password, string familyId, string role)
+    {
+        bool isNewFamily = string.IsNullOrWhiteSpace(familyId);
+        bool familyExists = !isNewFamily && await _familyExistService.FamilyExists(familyId);
+
+        var user = new User
+        {
+            UserName = userName,
+            Email = email,
+            FamilyId = isNewFamily ? Guid.NewGuid().ToString() : familyId
+        };
+
+        var result = await _userManager.CreateAsync(user, password);
+
+        if (!result.Succeeded)
+        {
+            return new RegisterUserResponse
+            {
+                Succeeded = false,
+                Errors = result.Errors.Select(e => e.Description).ToList()
+            };
+        }
+
+        await _userRolesService.AddRoleToTheUser(user, role);
 
         await _emailManagerService.SendConfirmationEmailAsync(user);
 
@@ -54,3 +87,4 @@ public class RegisterUserService : IRegisterUserService
         };
     }
 }
+

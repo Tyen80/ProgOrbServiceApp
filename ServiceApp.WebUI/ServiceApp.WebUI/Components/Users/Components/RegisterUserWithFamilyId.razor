@@ -1,0 +1,69 @@
+﻿@page "/Family/Join"
+@inject ISender Sender
+@inject NavigationManager NavigationManager
+
+<div class="container-xxl vh-100 d-flex justify-content-center mt-4">
+    <div class="w-100 d-flex justify-content-center">
+        <div class="col-12 col-md-8 col-lg-6">
+            <EditForm Model="registerUser" FormName="RegisterUserForm" OnValidSubmit="HandleSubmit">
+                <DataAnnotationsValidator />
+                <ValidationSummary />
+                <div class="mb-3">
+                    <label class="form-label" for="FamilyId">FamilyId</label>
+                    <InputText id="FamilyId" class="form-control" @bind-Value="familyId" readonly />
+                </div>       
+                <div class="mb-3">
+                    <label class="form-label" for="Role">Role</label>
+                    <InputText id="Role" class="form-control" @bind-Value="role" readonly />
+                </div>
+                <RegisterUserForm registerUser="registerUser" />
+            </EditForm>
+        </div>
+    </div>
+</div>
+
+@code {
+    [SupplyParameterFromQuery]
+    private string? familyId { get; set; }
+
+    [SupplyParameterFromQuery]
+    private string? role { get; set; }
+
+    private string ErrorMessage { get; set; } = string.Empty;
+
+    [SupplyParameterFromForm]
+    private RegisterUserModel registerUser { get; set; } = new();
+
+    protected override void OnInitialized()
+    {
+        if (familyId != null)
+            registerUser.FamilyId = familyId;
+        if (role != null)
+            registerUser.Role = role;
+    }
+
+    private async Task HandleSubmit()
+    {
+        if (familyId == null)
+        {
+            ErrorMessage = "No familyId found";
+        }
+        else
+        {
+            var command = new RegisterInvitedUserCommand
+                {                  
+                    UserName = registerUser.UserName,
+                    Email = registerUser.Email,
+                    Password = registerUser.Password,
+                    FamilyId = familyId,
+                    Role = role 
+                };
+
+            var result = await Sender.Send(command);
+            if (result.Success)
+            {
+                NavigationManager.NavigateTo("/login");
+            }
+        }
+    }
+}

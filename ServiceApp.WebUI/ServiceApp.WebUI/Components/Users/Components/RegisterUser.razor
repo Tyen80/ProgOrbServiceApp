@@ -1,4 +1,5 @@
 ﻿@page "/register"
+@using ServiceApp.Application.Users.RegisterNewUser
 @inject ISender Sender
 @inject NavigationManager NavigationManager
 
@@ -40,7 +41,7 @@
 
     private async Task HandleValidSubmit()
     {
-        var command = new RegisterUserCommand
+        var command = new RegisterNewUserCommand
         {
             UserName = model.UserName,
             Email = model.Email,
