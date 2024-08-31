@@ -1,5 +1,12 @@
 ﻿@page "/todoitem"
 @page "/todoitem/{Id:int}"
+
+
+@using ServiceApp.Application.Users
+@using ServiceApp.Application.Users.GetAllFamilyUsers
+@using ServiceApp.Domain.Users
+@using ServiceApp.WebUI.Client.Services.FamilyMembersService
+@inject IFamilyMemberService FamilyMemberService
 @inject IToDoItemService ToDoItemService
 @inject ITaskService TaskService
 @inject NavigationManager NavigationManager 
@@ -14,6 +21,18 @@
     @if(_toDoItemModel != null)
     {
         <EditForm Model="_toDoItemModel" OnValidSubmit="HandleValidSubmit">
+            <div class="mb-3">
+                <label class="form-label">Velg bruker</label>
+                <InputSelect class="form-control mb-3" @bind-Value="_toDoItemModel.UserId">
+                    <option value="">Velg bruker</option>
+                    @foreach(var user in _userDtos)
+                    {
+                        <option value="@user.Id">
+                            @user.UserName
+                        </option>
+                    }
+                </InputSelect>
+            </div>
             <div class="mb-3">
                <label class="form-label">Oppgaver</label>
                <InputSelect class="form-control mb-3" @bind-Value="_toDoItemModel.TaskId">
@@ -56,6 +75,8 @@
 
     private ToDoItemModel _toDoItemModel = new ToDoItemModel();
     private List<TaskResponse>? _taskResponses = new List<TaskResponse>();
+    private List<UsersDto> _userDtos = new List<UsersDto>();
+    
 
     protected override async Task OnParametersSetAsync()
     {
@@ -77,6 +98,7 @@
             _toDoItemModel = new ToDoItemModel();
         }
         _taskResponses = await TaskService.GetAllTasks();
+       _userDtos = await FamilyMemberService.GetAllUsersByFamilyId();
 
     }
 

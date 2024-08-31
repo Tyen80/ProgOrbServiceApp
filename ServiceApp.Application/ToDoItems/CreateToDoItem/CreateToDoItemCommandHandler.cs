@@ -20,7 +20,7 @@ public class CreateToDoItemCommandHandler : ICommandHandler<CreateToDoItemComman
         {
             var newToDoItem = request.Adapt<ToDoItem>();
 
-            newToDoItem.UserId = await _userService.GetCurrentUserByIdAsync();
+            newToDoItem.UserId = request.UserId ?? await _userService.GetCurrentUserByIdAsync();
             newToDoItem.FamilyId = await _userService.GetCurrentFamilyIdAsync();
 
             var createdToDoItem = await _toDoItemRepository.CreateAsync(newToDoItem);

@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using ServiceApp.WebUI.Client;
+using ServiceApp.WebUI.Client.Services.FamilyMembersService;
 using ServiceApp.WebUI.Client.Services.TaskService;
 using ServiceApp.WebUI.Client.Services.ToDoItemService;
 
@@ -14,5 +15,6 @@ builder.Services.AddSingleton<AuthenticationStateProvider, PersistentAuthenticat
 
 builder.Services.AddScoped<ITaskService, TaskService>();
 builder.Services.AddScoped<IToDoItemService, ToDoItemService>();
+builder.Services.AddScoped<IFamilyMemberService, FamilyMemberService>();
 
 await builder.Build().RunAsync();

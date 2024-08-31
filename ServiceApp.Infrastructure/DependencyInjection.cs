@@ -8,6 +8,7 @@ using ServiceApp.Application.Authentication;
 using ServiceApp.Domain.Email;
 using ServiceApp.Domain.Tasks;
 using ServiceApp.Domain.ToDoItems;
+using ServiceApp.Domain.Users;
 using ServiceApp.Infrastructure.Authentication;
 using ServiceApp.Infrastructure.Email;
 using ServiceApp.Infrastructure.Repositories;
@@ -27,7 +28,7 @@ public static class DependencyInjection
         services.AddScoped<IToDoItemRepository, ToDoItemRepository>();
         services.AddScoped<IUserService, UserService>();
         services.AddScoped<IEmailService, EmailService>();
-
+        services.AddScoped<IUserRepository, UserRepository>();
 
         AddAuthentication(services);
 
