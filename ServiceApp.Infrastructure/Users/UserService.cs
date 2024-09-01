@@ -41,6 +41,12 @@ public class UserService : IUserService
         return user?.Id ?? string.Empty;
     }
 
+    public async Task<string> GetUserNameById(string userId)
+    {
+        var user = await GetUserAsync(userId);
+        return user?.UserName ?? string.Empty;
+    }
+
     public async Task<bool> IsCurrentUserInToleAsync(string role)
     {
         var user = await GetCurrentUserAsync();

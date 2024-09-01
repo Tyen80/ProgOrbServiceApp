@@ -9,8 +9,6 @@ builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents()
     .AddInteractiveWebAssemblyComponents();
 
-
-
 builder.Services.AddControllers();
 
 builder.Services.AddInfrastructure(builder.Configuration);

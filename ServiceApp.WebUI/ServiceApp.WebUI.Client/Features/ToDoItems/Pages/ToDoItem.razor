@@ -1,17 +1,12 @@
 ﻿@page "/todoitem"
 @page "/todoitem/{Id:int}"
 
-
-@using ServiceApp.Application.Users
-@using ServiceApp.Application.Users.GetAllFamilyUsers
-@using ServiceApp.Domain.Users
-@using ServiceApp.WebUI.Client.Services.FamilyMembersService
 @inject IFamilyMemberService FamilyMemberService
 @inject IToDoItemService ToDoItemService
 @inject ITaskService TaskService
 @inject NavigationManager NavigationManager 
 @rendermode @(new InteractiveWebAssemblyRenderMode(false))
-
+@attribute [Authorize(Roles ="FamilyAdmin")]
 
 
 <div class="col-12 col-lg-6">
@@ -98,7 +93,7 @@
             _toDoItemModel = new ToDoItemModel();
         }
         _taskResponses = await TaskService.GetAllTasks();
-       _userDtos = await FamilyMemberService.GetAllUsersByFamilyId();
+        _userDtos = await FamilyMemberService.GetAllUsersByFamilyId();
 
     }
 

@@ -8,4 +8,5 @@ public class User : IdentityUser, IUser
 
     public List<ToDoItem> ToDoItems { get; set; } = new();
     public string? FamilyId { get; set; }
+
 }

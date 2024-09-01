@@ -21,4 +21,14 @@ public class FamilyMemberService : IFamilyMemberService
         }
         return response;
     }
+
+    public async Task<List<UsersDto>> GetFamilyMembersByRoleAsync()
+    {
+        var response = await _http.GetFromJsonAsync<List<UsersDto>>("api/familymember/role");
+        if (response == null)
+        {
+            return new List<UsersDto>();
+        }
+        return response;
+    }
 }

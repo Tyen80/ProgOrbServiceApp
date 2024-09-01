@@ -1,4 +1,4 @@
-﻿namespace ServiceApp.WebUI.Components.Users.Components;
+﻿namespace ServiceApp.WebUI.Components.Users;
 
 public class InviteUserModel
 {

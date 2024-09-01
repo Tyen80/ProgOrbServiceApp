@@ -25,13 +25,27 @@ public class GetAllActiveToDoItemsQueryHandler : IQueryHandler<GetAllActiveToDoI
         {
             var familyId = await _userService.GetCurrentFamilyIdAsync();
             toDoItems = await _toDoItemRepository.GetAllActiveByFamilyId(familyId);
+
         }
         else
         {
             toDoItems = await _toDoItemRepository.GetAllActiveByUserId(userId);
         }
 
-        var result = toDoItems.Adapt<List<ToDoItemResponse>>();
-        return Result.Ok(result);
+        var toDoItemResponses = new List<ToDoItemResponse>();
+
+        foreach (var item in toDoItems)
+        {
+            var response = item.Adapt<ToDoItemResponse>();
+
+            if (isParent)
+            {
+                response.UserName = await _userService.GetUserNameById(response.UserId);
+            }
+
+            toDoItemResponses.Add(response);
+        }
+
+        return Result.Ok(toDoItemResponses);
     }
 }

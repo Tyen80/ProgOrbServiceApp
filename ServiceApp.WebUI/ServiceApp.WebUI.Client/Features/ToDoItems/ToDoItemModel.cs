@@ -11,4 +11,6 @@ public class ToDoItemModel
     public string FamilyId { get; set; } = string.Empty;
     public DateTime DueDate { get; set; } = DateTime.Now;
     public TaskToDo? Task;
+
+    public string? UserName { get; set; }
 }

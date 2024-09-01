@@ -2,6 +2,7 @@
 @inject ITaskService TaskService
 @inject NavigationManager NavigationManager
 @rendermode @(new InteractiveWebAssemblyRenderMode(false))
+@attribute [Authorize(Roles ="FamilyAdmin")]
 
 <div class="container-xxl">
 

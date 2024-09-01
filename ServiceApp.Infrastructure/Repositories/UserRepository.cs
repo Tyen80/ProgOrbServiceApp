@@ -15,4 +15,11 @@ public class UserRepository : IUserRepository
     {
         return await _context.Users.Where(u => u.FamilyId == familyId).ToListAsync<IUser>();
     }
+
+    public async Task<List<IUser>> GetFamilyMembersByRoleAsync(string familyId)
+    {
+        return await _context.Users.Where(u => u.FamilyId == familyId)
+            .Where(u => u.FamilyId == familyId)
+            .ToListAsync<IUser>();
+    }
 }

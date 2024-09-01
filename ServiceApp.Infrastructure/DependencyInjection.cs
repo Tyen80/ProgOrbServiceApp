@@ -48,7 +48,11 @@ public static class DependencyInjection
         services.AddScoped<AuthenticationStateProvider, ServerAuthenticationStateProvider>();
         services.AddCascadingAuthenticationState();
 
-        services.AddAuthorization();
+        services.AddAuthorization(options =>
+        {
+            options.AddPolicy("RequireAuthenticatedUser", policy =>
+                policy.RequireAuthenticatedUser());
+        });
         services.AddAuthentication(options =>
         {
             options.DefaultScheme = IdentityConstants.ApplicationScheme;
