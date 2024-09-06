@@ -1,4 +1,6 @@
-﻿namespace ServiceApp.Application.ToDoItems.CreateToDoItem;
+﻿using ServiceApp.Application.ToDoItems.ToDoItemsDtos;
+
+namespace ServiceApp.Application.ToDoItems.CreateToDoItem;
 public class CreateToDoItemCommand : ICommand<ToDoItemResponse>
 {
     public int TaskId { get; set; }

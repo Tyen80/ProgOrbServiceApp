@@ -22,7 +22,7 @@ public class UserService : IUserService
         {
             throw new UserNotAuthorizedException();
         }
-        return user.FamilyId;
+        return user.FamilyId ?? string.Empty;
     }
 
     public async Task<string> GetCurrentUserByIdAsync()

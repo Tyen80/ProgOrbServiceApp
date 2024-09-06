@@ -1,0 +1,60 @@
+﻿@page "/todoitemsapprove"
+@inject IToDoItemService ToDoItemService
+@rendermode @(new InteractiveWebAssemblyRenderMode(false))
+
+<h3>ToDoItemsApprove</h3>
+
+<ul class="list-group">
+    @foreach (var completedTask in _pendingApprovalTasks)
+    {
+        <li class="list-group-item">
+            <strong>Title:</strong> @completedTask.Title <br />
+            <strong>Amount:</strong> @completedTask.Amount <br />
+            <strong>Date Updated:</strong> @completedTask.DateUpdated <br />
+            <button class="btn btn-primary" @onclick="() => OnApproved(completedTask.Id)">Approve</button>
+        </li>
+    }
+</ul>
+
+@code {
+    private List<CompletedTaskDto> _pendingApprovalTasks = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        var result = await ToDoItemService.GetPendingApprovelToDoItems();
+        if (result.Success && result.Value != null)
+        {
+            _pendingApprovalTasks = result.Value;
+        }
+        else
+        {
+            // Handle the error, e.g., show a message to the user
+            Console.WriteLine(result.Error);
+        }
+    }
+
+    private async Task OnApproved(int id)
+    {
+        var result = await ToDoItemService.GetToDoItemById(id);
+        if(result.Success && result.Value != null)
+        {
+            var toDoItem = result.Value;
+            toDoItem.IsApproved = true;
+            var updateResult = await ToDoItemService.UpdateToDoItem(toDoItem);
+            if (updateResult.Success)
+            {
+               await OnInitializedAsync();
+            }
+            else
+            {
+                // Handle the error, e.g., show a message to the user
+                Console.WriteLine(updateResult.Error);
+            }
+        }
+        else
+        {
+            // Handle the error, e.g., show a message to the user
+            Console.WriteLine(result.Error);
+        }    
+    }
+}

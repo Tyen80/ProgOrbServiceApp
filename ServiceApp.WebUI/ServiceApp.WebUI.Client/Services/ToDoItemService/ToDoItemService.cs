@@ -1,5 +1,5 @@
 ﻿using Mapster;
-using ServiceApp.Application.ToDoItems;
+using ServiceApp.Application.ToDoItems.ToDoItemsDtos;
 using ServiceApp.Domain.Abstractions;
 using ServiceApp.WebUI.Client.Features.ToDoItems;
 using System.Net.Http.Json;
@@ -44,6 +44,17 @@ public class ToDoItemService : IToDoItemService
         }
         var toDoItemModel = response.Adapt<ToDoItemModel>();
         return Result.Ok<ToDoItemModel?>(toDoItemModel);
+
+    }
+
+    public async Task<Result<TotalMoneyEarnedDto>> GetTotalMoneyEarned()
+    {
+        var response = await _http.GetFromJsonAsync<TotalMoneyEarnedDto>("api/todoitem/total-money-earned");
+        if (response != null)
+        {
+            return Result.Ok<TotalMoneyEarnedDto>(response);
+        }
+        return Result.Fail<TotalMoneyEarnedDto>("Failed to fetch total money earned");
     }
 
     public async Task<Result> CreateToDoItem(ToDoItemModel toDoItem)
@@ -72,5 +83,23 @@ public class ToDoItemService : IToDoItemService
         return response.IsSuccessStatusCode;
     }
 
+    public async Task<Result<List<CompletedTaskDto>>> GetCompletedTaskForLastWeek()
+    {
+        var response = await _http.GetFromJsonAsync<List<CompletedTaskDto>>("api/todoitem/completed-task-for-last-week");
+        if (response != null)
+        {
+            return Result.Ok(response);
+        }
+        return Result.Fail<List<CompletedTaskDto>>("Failed to fetch completed tasks for last week");
+    }
 
+    public async Task<Result<List<CompletedTaskDto>>> GetPendingApprovelToDoItems()
+    {
+        var response = await _http.GetFromJsonAsync<List<CompletedTaskDto>>("api/todoitem/pending-approval-tasks");
+        if (response != null)
+        {
+            return Result.Ok(response);
+        }
+        return Result.Fail<List<CompletedTaskDto>>("Failed to fetch pending approval tasks");
+    }
 }

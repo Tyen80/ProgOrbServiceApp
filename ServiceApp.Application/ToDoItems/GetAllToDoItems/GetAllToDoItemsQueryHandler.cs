@@ -1,4 +1,5 @@
-﻿using ServiceApp.Domain.ToDoItems;
+﻿using ServiceApp.Application.ToDoItems.ToDoItemsDtos;
+using ServiceApp.Domain.ToDoItems;
 
 namespace ServiceApp.Application.ToDoItems.GetAllToDoItems;
 public class GetAllToDoItemsQueryHandler : IQueryHandler<GetAllToDoItemsQuery, List<ToDoItemResponse>>

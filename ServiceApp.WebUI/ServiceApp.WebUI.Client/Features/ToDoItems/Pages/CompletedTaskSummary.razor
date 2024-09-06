@@ -1,0 +1,67 @@
+﻿@page "/completedtasksummary"
+@using ServiceApp.Application.ToDoItems.ToDoItemsDtos
+@using ServiceApp.Application.ToDoItems.GetTotalMoneyEarned
+@inject IToDoItemService ToDoItemService
+@rendermode @(new InteractiveWebAssemblyRenderMode(false))
+
+
+<h3>CompletedTaskSummary</h3>
+
+
+    <li><strong>Total opptjente kroner:</strong> @_totalMoneyEarnedDto.Total</li>
+    <li><strong>Total opptjente kroner denne uken:</strong> @_totalMoneyEarnedDto.TotalPerWeek</li>
+    <li><strong>Total opptjente kroner denne måned:</strong> @_totalMoneyEarnedDto.TotalPerMonth</li>
+    <li><strong>Completed tasks:</strong></li>
+<ol>
+        @foreach (var completedTask in _completedTaskDtos)
+        {
+            <li>
+                <strong>Title:</strong> @completedTask.Title <br />
+                <strong>Amount:</strong> @completedTask.Amount <br />
+                <strong>Date Updated:</strong> @completedTask.DateUpdated
+            </li>
+        }
+  
+</ol>
+
+
+
+@code {
+    private TotalMoneyEarnedDto _totalMoneyEarnedDto = new();
+    private List<CompletedTaskDto> _completedTaskDtos = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await GetTotalEarnedMoney();
+        await GetCompletedItems();
+    }
+
+
+    private async Task GetTotalEarnedMoney()
+    {
+        var result = await ToDoItemService.GetTotalMoneyEarned();
+        if (result.Success && result.Value != null)
+        {
+            _totalMoneyEarnedDto = result.Value;
+        }
+        else
+        {
+            // Handle the error case, e.g., show a message to the user
+            Console.WriteLine(result.Error ?? "Failed to fetch total money earned");
+        }
+        
+    }
+
+    private async Task GetCompletedItems()
+    {
+        var completedTask = await ToDoItemService.GetCompletedTaskForLastWeek();
+        if (completedTask.Success && completedTask.Value != null)
+        {
+            _completedTaskDtos = completedTask.Value;
+        }
+        else
+        {
+            Console.WriteLine(completedTask.Error ?? "Failed to fetch completed tasks");
+        }
+    }
+}

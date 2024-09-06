@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using ServiceApp.Domain.Abstractions;
 using ServiceApp.Domain.ToDoItems;
 
 namespace ServiceApp.Infrastructure.Repositories;
@@ -55,6 +56,7 @@ public class ToDoItemRepository : IToDoItemRepository
         toDoItemToUpdate.TaskId = entity.TaskId;
         toDoItemToUpdate.IsComplete = entity.IsComplete;
         toDoItemToUpdate.DateUpdated = DateTime.Now;
+        toDoItemToUpdate.IsApproved = entity.IsApproved;
         await _context.SaveChangesAsync();
         return toDoItemToUpdate;
     }
@@ -71,5 +73,42 @@ public class ToDoItemRepository : IToDoItemRepository
         return true;
     }
 
+    public async Task<(decimal total, decimal totalPerWeek, decimal totalPerMonth)> GetTotalMoneyEarned(string userId)
+    {
+        var oneWeekAgo = DateTime.Now.AddDays(-7);
+        var oneMonthAgo = DateTime.Now.AddMonths(-1);
 
+        var completedTasks = await _context.ToDoItems
+            .Where(x => x.IsApproved && x.Task != null && x.UserId == userId)
+            .Select(x => new { x.Task!.Amount, x.DateUpdated })
+            .ToListAsync();
+
+        var total = completedTasks.Sum(x => x.Amount);
+        var totalPerWeek = completedTasks.Where(x => x.DateUpdated >= oneWeekAgo).Sum(x => x.Amount);
+        var totalPerMonth = completedTasks.Where(x => x.DateUpdated >= oneMonthAgo).Sum(x => x.Amount);
+
+        return Result.Ok((total, totalPerWeek, totalPerMonth));
+    }
+
+    public async Task<List<ToDoItem>> GetCompletedTaskTitle()
+    {
+        var oneWeekAgo = DateTime.Now.AddDays(-7);
+
+        var completedTasks = await _context.ToDoItems
+            .Include(x => x.Task)
+            .Where(x => x.IsComplete && x.DateUpdated >= oneWeekAgo && x.Task != null)
+            .ToListAsync();
+
+        return completedTasks;
+    }
+
+    public async Task<List<ToDoItem>> GetPendingApprovalTasks()
+    {
+        var pendingApprovalTasks = await _context.ToDoItems
+          .Include(x => x.Task)
+          .Where(x => x.IsComplete && !x.IsApproved && x.Task != null)
+          .ToListAsync();
+
+        return pendingApprovalTasks;
+    }
 }
