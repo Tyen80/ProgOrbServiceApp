@@ -5,5 +5,7 @@ public class CompletedTaskDto
     public string Title { get; set; } = string.Empty;
     public decimal Amount { get; set; }
 
+    public string? UserName { get; set; }
+
     public DateTime? DateUpdated { get; set; }
 }

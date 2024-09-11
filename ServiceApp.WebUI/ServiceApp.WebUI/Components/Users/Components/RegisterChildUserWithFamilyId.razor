@@ -1,0 +1,81 @@
+﻿@page "/Family/JoinChild"
+@using ServiceApp.Application.Users.RegisterNewChildUser
+@inject ISender Sender
+@inject NavigationManager NavigationManager
+
+<div class="container-xxl vh-100 d-flex justify-content-center mt-4">
+    <div class="w-100 d-flex justify-content-center">
+        <div class="col-12 col-md-8 col-lg-6">
+            <EditForm Model="registerChild" FormName="RegisterChildForm" OnValidSubmit="HandleSubmit">
+                <DataAnnotationsValidator />
+                <ValidationSummary />
+                <div class="mb-3">
+                    <label class="form-label" for="FamilyId">FamilyId</label>
+                    <InputText id="FamilyId" class="form-control" @bind-Value="familyId" readonly />
+                </div>
+                <div class="mb-3">
+                    <label class="form-label" for="UserName">Bruker navn</label>
+                    <InputText id="UserName" @bind-Value="registerChild.UserName" class="form-control" />
+                    <ValidationMessage For="@(() => registerChild.UserName)" />
+                </div>
+                <div class="mb-3">
+                    <label class="form-label" for="UserEmail">Epost</label>
+                    <InputText id="UserEmail" @bind-Value="registerChild.Email" class="form-control" />
+                    <ValidationMessage For="@(() => registerChild.Email)" />
+                </div>
+                <div class="mb-3">
+                    <label class="form-label" for="Password">Passord</label>
+                    <InputText id="Password" type="password" @bind-Value="registerChild.Password" class="form-control" />
+                    <ValidationMessage For="@(() => registerChild.Password)" />
+                </div>
+                <div class="mb-3">
+                    <label class="form-label" for="ConfirmPassword">Passord</label>
+                    <InputText id="ConfirmPassword" type="password" @bind-Value="registerChild.ConfirmPassword" class="form-control" />
+                    <ValidationMessage For="@(() => registerChild.ConfirmPassword)" />
+                </div>
+
+                <button type="submit" class="btn btn-primary mt-3">Register</button>
+            </EditForm>
+        </div>
+    </div>
+</div>
+
+@code {
+    [SupplyParameterFromQuery]
+    private string? familyId { get; set; }
+
+    private string ErrorMessage { get; set; } = string.Empty;
+
+    [SupplyParameterFromForm]
+    private RegisterChildModel registerChild { get; set; } = new();
+
+    protected override void OnInitialized()
+    {
+        if (familyId != null)
+            registerChild.FamilyId = familyId;
+    }
+
+    private async Task HandleSubmit()
+    {
+        if (familyId == null)
+        {
+            ErrorMessage = "No familyId found";
+        }
+        else
+        {
+            var command = new RegisterNewChildUserCommand
+                {
+                    UserName = registerChild.UserName,
+                    Email = registerChild.Email,
+                    Password = registerChild.Password,
+                    FamilyId = familyId
+                };
+
+            var result = await Sender.Send(command);
+            if (result.Success)
+            {
+                NavigationManager.NavigateTo("/login");
+            }
+        }
+    }
+}

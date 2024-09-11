@@ -5,7 +5,7 @@
 @rendermode @(new InteractiveWebAssemblyRenderMode(false))
 
 
-<h3>CompletedTaskSummary</h3>
+<h3>Ferdige oppgaver for @userName </h3>
 
 
     <li><strong>Total opptjente kroner:</strong> @_totalMoneyEarnedDto.Total</li>
@@ -19,6 +19,7 @@
                 <strong>Title:</strong> @completedTask.Title <br />
                 <strong>Amount:</strong> @completedTask.Amount <br />
                 <strong>Date Updated:</strong> @completedTask.DateUpdated
+                <strong>Navn:</strong> @completedTask.UserName
             </li>
         }
   
@@ -30,10 +31,13 @@
     private TotalMoneyEarnedDto _totalMoneyEarnedDto = new();
     private List<CompletedTaskDto> _completedTaskDtos = new();
 
+    private string userName = string.Empty;
+
     protected override async Task OnInitializedAsync()
     {
         await GetTotalEarnedMoney();
         await GetCompletedItems();
+        SetUserName();
     }
 
 
@@ -62,6 +66,14 @@
         else
         {
             Console.WriteLine(completedTask.Error ?? "Failed to fetch completed tasks");
+        }
+    }
+
+    private void SetUserName()
+    {
+        if (_completedTaskDtos.Any())
+        {
+            userName = _completedTaskDtos.First().UserName ?? "Unknown User";
         }
     }
 }

@@ -26,7 +26,6 @@ public class GetAllActiveToDoItemsQueryHandler : IQueryHandler<GetAllActiveToDoI
         {
             var familyId = await _userService.GetCurrentFamilyIdAsync();
             toDoItems = await _toDoItemRepository.GetAllActiveByFamilyId(familyId);
-
         }
         else
         {

@@ -56,7 +56,7 @@
                     Email = registerUser.Email,
                     Password = registerUser.Password,
                     FamilyId = familyId,
-                    Role = role 
+                    Role = role ?? "FamilyMember"
                 };
 
             var result = await Sender.Send(command);

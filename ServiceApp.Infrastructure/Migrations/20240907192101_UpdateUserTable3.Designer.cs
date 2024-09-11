@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ServiceApp.Infrastructure;
 
@@ -11,9 +12,11 @@ using ServiceApp.Infrastructure;
 namespace ServiceApp.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240907192101_UpdateUserTable3")]
+    partial class UpdateUserTable3
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -181,7 +184,7 @@ namespace ServiceApp.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Tasks", (string)null);
+                    b.ToTable("Tasks");
                 });
 
             modelBuilder.Entity("ServiceApp.Domain.ToDoItems.ToDoItem", b =>
@@ -224,7 +227,7 @@ namespace ServiceApp.Infrastructure.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("ToDoItems", (string)null);
+                    b.ToTable("ToDoItems");
                 });
 
             modelBuilder.Entity("ServiceApp.Infrastructure.Users.User", b =>
