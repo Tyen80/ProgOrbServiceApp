@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using ServiceApp.Application.Tasks;
 using ServiceApp.Application.Tasks.CreateTask;
 using ServiceApp.Application.Tasks.DeleteTask;
+using ServiceApp.Application.Tasks.GetAllTaskByUserId;
 using ServiceApp.Application.Tasks.GetAllTasks;
 using ServiceApp.Application.Tasks.GetTaskById;
 using ServiceApp.Application.Tasks.UpdateTask;
@@ -26,6 +27,17 @@ public class TaskController : ControllerBase
     public async Task<ActionResult<Result<List<TaskResponse>>>> GetAllTasks()
     {
         var result = await _sender.Send(new GetAllTasksQuery());
+        if (result.Success)
+        {
+            return Ok(result.Value);
+        }
+        return BadRequest(result.Error);
+    }
+
+    [HttpGet("User/")]
+    public async Task<ActionResult<Result<List<TaskResponse>>>> GetAllTasksByUserId()
+    {
+        var result = await _sender.Send(new GetAllTaskByUserIdQuery());
         if (result.Success)
         {
             return Ok(result.Value);

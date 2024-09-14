@@ -1,0 +1,92 @@
+﻿@page "/tasks/todo/adult"
+@page "/tasks/todo/adult/{Id:int}"
+@inject ITaskService TaskService
+@inject NavigationManager NavigationManager
+@rendermode @(new InteractiveWebAssemblyRenderMode(false))
+@attribute [Authorize(Roles = "FamilyAdmin")]
+
+<div class="container-xxl">
+    <div class="col-12 col-lg-6">
+        <div class="text-center">
+            <h3>Oppgaver</h3>
+        </div>
+        <EditForm Model="_taskToDoAdult" OnValidSubmit="CreateTask">
+            <DataAnnotationsValidator />
+            <div class="mb-3">
+                <label class="form-label">Title</label>
+                <InputText class="form-control" @bind-Value="_taskToDoAdult.Title"></InputText>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Beskrivelse</label>
+                <InputTextArea class="form-control" @bind-Value="_taskToDoAdult.Description"></InputTextArea>
+            </div>
+             <div class="d-flex justify-content-between">
+                <button class="btn btn-primary" type="submit">Lagre</button>
+                <button class="btn btn-danger" type="button" @onclick="() => DeleteTask(_taskToDoAdult.Id)">Slett</button>
+            </div>
+        </EditForm>
+    </div>
+</div>
+   
+@code {
+    [Parameter]
+    public int Id { get; set; }
+
+    private TaskToDoAdultModel _taskToDoAdult = new();
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if (Id > 0)
+        {
+            var result = await TaskService.GetTaskById(Id);
+            if (result.Success && result.Value != null)
+            {
+                if (result.Value is TaskToDoAdultModel adultModel)
+                {
+                    _taskToDoAdult = adultModel;
+                }
+                else
+                {
+                    // Handle the case where the model is not of type TaskToDoChildModel
+                    _taskToDoAdult = new TaskToDoAdultModel
+                        {
+                            Id = result.Value.Id,
+                            Title = result.Value.Title,
+                            Description = result.Value.Description
+                            // Copy other properties as needed
+                        };
+                }
+            }
+            else
+            {
+                _taskToDoAdult = new TaskToDoAdultModel();
+            }
+        }
+        else
+        {
+            _taskToDoAdult = new TaskToDoAdultModel();
+        }
+    }
+
+    private async Task CreateTask()
+    {
+        if (Id > 0)
+        {
+            await TaskService.UpdateTask(_taskToDoAdult);
+        }
+        else
+        {
+            await TaskService.CreateTask(_taskToDoAdult);
+        }
+        NavigationManager.NavigateTo("/tasks/adult");
+    }
+
+    private async Task DeleteTask(int id)
+    {
+        var success = await TaskService.DeleteTask(id);
+        if (success)
+        {
+            NavigationManager.NavigateTo("/tasks/adult");
+        }
+    }
+}

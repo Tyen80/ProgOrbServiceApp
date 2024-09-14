@@ -14,7 +14,6 @@
         @if(_taskToDoModel != null)
         {
             <EditForm Model="_taskToDoModel" OnValidSubmit="CreateTask">
-
                 <div class="mb-3">
                     <label class="form-label">Tittel</label>
                     <InputText class="form-control" @bind-Value="_taskToDoModel.Title" />
@@ -27,12 +26,11 @@
                      <label class="form-label">Kr</label>
                     <InputNumber class="form-control" @bind-Value="_taskToDoModel.Amount" />
                 </div>
-                <button class="btn btn-primary" type="submit">Lagre</button>
-        
-            </EditForm>
-           
-                <button class="btn btn-danger mt-3" @onclick="() => DeleteTask(_taskToDoModel.Id)">Slett</button>
-          
+                <div class="d-flex justify-content-between">
+                    <button class="btn btn-primary mt-3" type="submit">Lagre</button>
+                    <button class="btn btn-danger mt-3" type="button" @onclick="() => DeleteTask(_taskToDoModel.Id)">Slett</button>
+                </div>
+            </EditForm>           
         }
     </div>
 </div>
@@ -41,7 +39,7 @@
     [Parameter]
     public int Id { get; set; }
 
-    private TaskToDoModel _taskToDoModel = new TaskToDoModel();
+    private TaskToDoChildModel _taskToDoModel = new TaskToDoChildModel();
 
     protected override async Task OnParametersSetAsync()
     {
@@ -50,16 +48,30 @@
             var result = await TaskService.GetTaskById(Id);
             if (result.Success && result.Value != null)
             {
-                _taskToDoModel = result.Value;
+                if (result.Value is TaskToDoChildModel childModel)
+                {
+                    _taskToDoModel = childModel;
+                }
+                else
+                {
+                    // Handle the case where the model is not of type TaskToDoChildModel
+                    _taskToDoModel = new TaskToDoChildModel
+                    {
+                        Id = result.Value.Id,
+                        Title = result.Value.Title,
+                        Description = result.Value.Description
+                        // Copy other properties as needed
+                    };
+                }
             }
             else
             {
-                _taskToDoModel = new TaskToDoModel();
+                _taskToDoModel = new TaskToDoChildModel();
             }
         }
         else
         {
-            _taskToDoModel = new TaskToDoModel();
+            _taskToDoModel = new TaskToDoChildModel();
         }
     }
 

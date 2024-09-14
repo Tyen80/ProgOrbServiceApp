@@ -23,6 +23,15 @@ public class TaskService : ITaskService
         }
         return Result.Ok(response);
     }
+    public async Task<Result<List<TaskResponse>>> GetAllTasksByUserId()
+    {
+        var response = await _httpClient.GetFromJsonAsync<List<TaskResponse>>("api/task/user");
+        if (response == null)
+        {
+            return Result.Fail<List<TaskResponse>>("Tasks not found");
+        }
+        return Result.Ok(response);
+    }
 
     public async Task<Result<TaskToDoModel?>> GetTaskById(int id)
     {
@@ -33,6 +42,7 @@ public class TaskService : ITaskService
         }
         return Result.Ok<TaskToDoModel?>(response);
     }
+
     public async Task<Result> CreateTask(TaskToDoModel task)
     {
         var response = await _httpClient.PostAsJsonAsync("api/task", task);
@@ -58,5 +68,6 @@ public class TaskService : ITaskService
         var response = await _httpClient.DeleteAsync($"api/task/{id}");
         return response.IsSuccessStatusCode;
     }
+
 
 }

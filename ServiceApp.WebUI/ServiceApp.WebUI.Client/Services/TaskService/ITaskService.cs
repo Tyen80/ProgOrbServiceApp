@@ -7,6 +7,7 @@ namespace ServiceApp.WebUI.Client.Services.TaskService;
 public interface ITaskService
 {
     Task<Result<List<TaskResponse>>> GetAllTasks();
+    Task<Result<List<TaskResponse>>> GetAllTasksByUserId();
     Task<Result<TaskToDoModel?>> GetTaskById(int id);
     Task<Result> CreateTask(TaskToDoModel task);
     Task<Result<TaskToDoModel>> UpdateTask(TaskToDoModel task);

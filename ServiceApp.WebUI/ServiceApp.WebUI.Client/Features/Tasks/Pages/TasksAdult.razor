@@ -1,8 +1,12 @@
-﻿@page "/tasks"
+﻿@page "/tasks/adult"
 @inject ITaskService TaskService
 @inject NavigationManager NavigationManager
+@attribute [Authorize(Roles = "FamilyAdmin")]
+
+
 @rendermode @(new InteractiveWebAssemblyRenderMode(false))
-@attribute [Authorize(Roles ="FamilyAdmin")]
+
+
 
 <div class="container-xxl">
 
@@ -20,16 +24,14 @@
                 <div class="col-12 col-lg-6 col-lg-3 mb-3">                  
                     <div class="card mx-2 my-2">                      
                         <div class="card-header">
-                            <a href="/tasks/todo/@task.Id"><h5 class="card-title">@task.Title</h5></a>
+                            <a href="/tasks/todo/adult/@task.Id"><h5 class="card-title">@task.Title</h5></a>
                         </div>
                         <div class="card-body">
                             <p class="card-text">
                                 <strong>Beskrivelse:</strong> @task.Description
                             </p>
-                            <p class="card-text">
-                                <strong>Kr:</strong> @task.Amount
-                            </p>
-                            <a href="/tasks/todo/@task.Id" class="btn btn-primary">View Task</a>
+
+                            <a href="/tasks/todo/adult/@task.Id" class="btn btn-primary">Rediger oppgave</a>
                         </div>
                     </div>
                 </div>
@@ -43,11 +45,11 @@
 
     protected override async Task OnInitializedAsync()
     {
-        _taskResponses = await TaskService.GetAllTasks();
+        _taskResponses = await TaskService.GetAllTasksByUserId();
     }
 
     private void CreateTask()
     {
-        NavigationManager.NavigateTo("/tasks/todo");
+        NavigationManager.NavigateTo("/tasks/todo/adult");
     }
 }
