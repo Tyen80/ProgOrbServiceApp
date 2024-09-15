@@ -18,7 +18,7 @@ public class GetAllActiveToDoItemsQueryHandler : IQueryHandler<GetAllActiveToDoI
     {
 
         var userId = await _userService.GetCurrentUserByIdAsync();
-        var isParent = await _userService.IsCurrentUserInToleAsync("FamilyAdmin");
+        var isParent = await _userService.IsCurrentUserInRoleAsync("FamilyAdmin");
 
         List<ToDoItem> toDoItems;
 

@@ -67,4 +67,16 @@ public class UserRolesService : IUserRolesService
         }
         return Result.Fail<List<string>>("User not found");
     }
+
+    public async Task<List<string>> GetUserRolesAsync(string userId)
+    {
+        var user = await _userManager.FindByIdAsync(userId);
+        if (user is null)
+        {
+            return [];
+        }
+
+        var roles = await _userManager.GetRolesAsync(user);
+        return roles.ToList();
+    }
 }

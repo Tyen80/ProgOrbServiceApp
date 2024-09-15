@@ -18,7 +18,7 @@ public class GetCompletedTaskForLastWeekQueryHandler : IQueryHandler<GetComplete
     {
         var userId = await _userService.GetCurrentUserByIdAsync();
         var familyId = await _userService.GetCurrentFamilyIdAsync();
-        var isFamilyAdmin = await _userService.IsCurrentUserInToleAsync("FamilyAdmin");
+        var isFamilyAdmin = await _userService.IsCurrentUserInRoleAsync("FamilyAdmin");
 
         if (isFamilyAdmin)
         {

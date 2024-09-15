@@ -1,0 +1,35 @@
+﻿@page "/user-overview"
+@using Microsoft.AspNetCore.Components.QuickGrid
+@using ServiceApp.Application.Users.GetAllFamilyUsers
+
+@inject ISender _sender
+@rendermode InteractiveServer
+@attribute [Authorize (Roles = "FamilyAdmin")]
+
+<h3>UserOverview</h3>
+
+<div class="grid">
+    <QuickGrid Items="_usersDtos.AsQueryable()">
+        <PropertyColumn Property="@(u => u.UserName)" Title="Navn"  />
+        <PropertyColumn Property="@(u => u.Email)" Title="Epost"/>
+        <PropertyColumn Property="@(u => u.Roles)" Title="Roller"/>
+
+    </QuickGrid>
+</div>
+
+@code {
+    private List<UsersDto> _usersDtos = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        var result = await _sender.Send(new GetAllFamilyUsersQuery());
+        if(result.Success && result.Value != null)
+        {
+            _usersDtos = result.Value;
+        }
+        else
+        {
+            // Handle error
+        }
+    }
+}

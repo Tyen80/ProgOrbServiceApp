@@ -47,7 +47,7 @@ public class UserService : IUserService
         return user?.UserName ?? string.Empty;
     }
 
-    public async Task<bool> IsCurrentUserInToleAsync(string role)
+    public async Task<bool> IsCurrentUserInRoleAsync(string role)
     {
         var user = await GetCurrentUserAsync();
         var result = user is not null && await _userManager.IsInRoleAsync(user, role);
