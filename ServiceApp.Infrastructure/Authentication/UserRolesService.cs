@@ -36,6 +36,30 @@ public class UserRolesService : IUserRolesService
         return Result.Ok();
     }
 
+    public async Task AddRoleToTheUserAsync(string userId, string roleName)
+    {
+        var user = await _userManager.FindByIdAsync(userId);
+        if (user is null)
+        {
+            throw new Exception("User not found");
+        }
+
+        if (!await _roleManager.RoleExistsAsync(roleName))
+        {
+            var roleResult = await _roleManager.CreateAsync(new IdentityRole(roleName));
+            if (!roleResult.Succeeded)
+            {
+                throw new Exception("Role creation failed");
+            }
+
+        }
+        var result = await _userManager.AddToRoleAsync(user, roleName);
+        if (!result.Succeeded)
+        {
+            throw new Exception("Role assignment failed");
+        }
+    }
+
     public async Task<Result<List<string>>> GetAllRoles(IUser user)
     {
         var userEntity = user as User;
@@ -78,5 +102,20 @@ public class UserRolesService : IUserRolesService
 
         var roles = await _userManager.GetRolesAsync(user);
         return roles.ToList();
+    }
+
+    public async Task RemoveRoleFromUserAsync(string userId, string roleName)
+    {
+        var user = await _userManager.FindByIdAsync(userId);
+        if (user is null)
+        {
+            throw new Exception("User not found");
+        }
+
+        var result = await _userManager.RemoveFromRoleAsync(user, roleName);
+        if (!result.Succeeded)
+        {
+            throw new Exception("Role removal failed");
+        }
     }
 }

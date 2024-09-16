@@ -1,0 +1,77 @@
+﻿@using ServiceApp.Application.Users.AddRoleToUser
+@using ServiceApp.Application.Users.RemoveRoleFromUser
+@inject ISender Sender
+
+@if (showmodal)
+{
+    <div class="custom-modal-overlay" @onclick="CloseModal">
+        <div class="custom-modal" @onclick:stopPropagation="true">
+            <div class="custom-modal-header">
+                <button type="button" class="custom-close" @onclick="CloseModal">&times;</button>
+            </div>
+            <div class="custom-modal-body">
+                <QuickGrid Items="Roles.AsQueryable()">
+                    <PropertyColumn Property="@(r => r)" Title="Rolle" />
+                        <TemplateColumn>
+                            <button type="button" class="btn btn-danger btn-sm" @onclick="() => RemoveRole(context)">Slett</button>
+                        </TemplateColumn>
+                </QuickGrid>
+            </div>
+            <div class="mt-2">
+                <input type="text" class="form-control mb-3" @bind="newRole" />
+                <button type="button" class="btn btn-primary  mb-3 " @onclick="AddRole">Legg til rolle</button>
+            </div>
+        </div>
+    </div>
+}
+
+@code {
+    [Parameter]
+    public required string UserId { get; set; }
+    [Parameter]
+    public string? UserName { get; set; }
+    [Parameter]
+    public bool showmodal { get; set; }
+    [Parameter]
+    public EventCallback<bool> ShowModalChanged { get; set; }
+
+    private List<string> Roles { get; set; } = [];
+    private string newRole = string.Empty;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        await LoadUserRoles();
+    }
+
+    private async Task CloseModal()
+    {
+        showmodal = false;
+        newRole = string.Empty;
+        await LoadUserRoles();
+        await ShowModalChanged.InvokeAsync(showmodal);      
+    }
+
+    private async Task AddRole()
+    {
+        if (!string.IsNullOrWhiteSpace(newRole))
+        {
+            await Sender.Send(new AddRoleToUserCommand {UserId = UserId, RoleName = newRole});
+            await LoadUserRoles();
+            newRole = string.Empty;
+        }
+    }
+
+    private async Task RemoveRole(string role)
+    {
+        await Sender.Send(new RemoveRoleFromUserCommand {UserId = UserId, RoleName = role});
+        await LoadUserRoles();
+    }
+
+    private async Task LoadUserRoles()
+    {
+        if(showmodal && UserId != null)
+        {
+            Roles = (await Sender.Send(new GetUserRolesQuery {UserId = UserId})).Value ?? [];
+        }
+    }
+}

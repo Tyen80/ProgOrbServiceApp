@@ -1,29 +1,39 @@
 ﻿@page "/user-overview"
-@using Microsoft.AspNetCore.Components.QuickGrid
-@using ServiceApp.Application.Users.GetAllFamilyUsers
-
 @inject ISender _sender
-@rendermode InteractiveServer
+@rendermode @(new InteractiveServerRenderMode(false))
 @attribute [Authorize (Roles = "FamilyAdmin")]
 
-<h3>UserOverview</h3>
+<h3>Brukere</h3>
 
 <div class="grid">
     <QuickGrid Items="_usersDtos.AsQueryable()">
-        <PropertyColumn Property="@(u => u.UserName)" Title="Navn"  />
+        <PropertyColumn Property="@(u => u.UserName)" Title="Navn"/>
         <PropertyColumn Property="@(u => u.Email)" Title="Epost"/>
         <PropertyColumn Property="@(u => u.Roles)" Title="Roller"/>
-
+        <TemplateColumn>
+            <button type="button" class="btn btn-primary btn-sm" @onclick="() => ShowModal(context.Id, context.UserName)">Manage roles</button>
+        </TemplateColumn>
     </QuickGrid>
 </div>
+
+<RolesModal UserId="@selectedUserId" UserName="@selectedUserName" showmodal="@showmodal" ShowModalChanged="CloseModal" />
 
 @code {
     private List<UsersDto> _usersDtos = new();
 
+    private bool showmodal = false; 
+    private string selectedUserId = string.Empty;
+    private string selectedUserName = string.Empty;
+
     protected override async Task OnInitializedAsync()
     {
+        await LoadUsers();
+    }
+
+    private async Task LoadUsers()
+    {
         var result = await _sender.Send(new GetAllFamilyUsersQuery());
-        if(result.Success && result.Value != null)
+        if (result.Success && result.Value != null)
         {
             _usersDtos = result.Value;
         }
@@ -31,5 +41,19 @@
         {
             // Handle error
         }
+    }
+
+    private void ShowModal(string userId, string userName)
+    {
+        selectedUserId = userId;
+        selectedUserName = userName;
+        showmodal = true;
+    }
+
+    private async Task CloseModal()
+    {
+        showmodal = false;
+        await LoadUsers();
+        StateHasChanged();
     }
 }
