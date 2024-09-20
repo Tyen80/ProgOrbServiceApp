@@ -21,21 +21,13 @@ public class FamilyMemberController : ControllerBase
     public async Task<ActionResult<Result<List<User>>>> GetFamilyMembersAsync()
     {
         var result = await _sender.Send(new GetAllFamilyUsersQuery());
-        if (result.Success)
-        {
-            return Ok(result.Value);
-        }
-        return BadRequest(result.Error);
+        return Ok(result.Value);
     }
 
     [HttpGet("{role}")]
     public async Task<ActionResult<Result<List<User>>>> GetFamilyMembersByRoleAsync()
     {
         var result = await _sender.Send(new GetFamilyUserByRoleQuery());
-        if (result.Success)
-        {
-            return Ok(result.Value);
-        }
-        return BadRequest(result.Error);
+        return Ok(result.Value);
     }
 }

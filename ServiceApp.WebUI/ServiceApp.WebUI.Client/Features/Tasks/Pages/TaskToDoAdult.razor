@@ -39,28 +39,15 @@
         if (Id > 0)
         {
             var result = await TaskService.GetTaskById(Id);
-            if (result.Success && result.Value != null)
+            if (result != null)
             {
-                if (result.Value is TaskToDoAdultModel adultModel)
+                _taskToDoAdult = new TaskToDoAdultModel
                 {
-                    _taskToDoAdult = adultModel;
-                }
-                else
-                {
-                    // Handle the case where the model is not of type TaskToDoChildModel
-                    _taskToDoAdult = new TaskToDoAdultModel
-                        {
-                            Id = result.Value.Id,
-                            Title = result.Value.Title,
-                            Description = result.Value.Description
-                            // Copy other properties as needed
-                        };
-                }
-            }
-            else
-            {
-                _taskToDoAdult = new TaskToDoAdultModel();
-            }
+                    Id = result.Value.Id,
+                    Title = result.Value.Title,
+                    Description = result.Value.Description                       
+                };
+            }        
         }
         else
         {

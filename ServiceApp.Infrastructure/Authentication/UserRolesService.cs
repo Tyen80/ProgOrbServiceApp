@@ -18,8 +18,6 @@ public class UserRolesService : IUserRolesService
 
     public async Task<Result> AddRoleToTheUser(IUser user, string roleName)
     {
-
-
         if (!await _roleManager.RoleExistsAsync(roleName))
         {
             await _roleManager.CreateAsync(new IdentityRole(roleName));

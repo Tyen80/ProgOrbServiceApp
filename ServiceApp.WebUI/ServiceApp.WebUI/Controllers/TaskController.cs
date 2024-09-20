@@ -8,7 +8,6 @@ using ServiceApp.Application.Tasks.GetAllTaskByUserId;
 using ServiceApp.Application.Tasks.GetAllTasks;
 using ServiceApp.Application.Tasks.GetTaskById;
 using ServiceApp.Application.Tasks.UpdateTask;
-using ServiceApp.Domain.Abstractions;
 using ServiceApp.WebUI.Client.Features.Tasks;
 
 namespace ServiceApp.WebUI.Controllers;
@@ -24,37 +23,24 @@ public class TaskController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<ActionResult<Result<List<TaskResponse>>>> GetAllTasks()
+    public async Task<ActionResult<List<TaskResponse>>> GetAllTasks()
     {
         var result = await _sender.Send(new GetAllTasksQuery());
-        if (result.Success)
-        {
-            return Ok(result.Value);
-        }
-        return BadRequest(result.Error);
+        return Ok(result.Value);
     }
 
     [HttpGet("User/")]
-    public async Task<ActionResult<Result<List<TaskResponse>>>> GetAllTasksByUserId()
+    public async Task<ActionResult<List<TaskResponse>>> GetAllTasksByUserId()
     {
         var result = await _sender.Send(new GetAllTaskByUserIdQuery());
-        if (result.Success)
-        {
-            return Ok(result.Value);
-        }
-        return BadRequest(result.Error);
+        return Ok(result.Value);
     }
 
     [HttpGet("{id}")]
-    public async Task<ActionResult<Result<TaskToDoModel>>> GetTaskById(int id)
+    public async Task<ActionResult<TaskResponse>> GetTaskById(int id)
     {
         var result = await _sender.Send(new GetTaskByIdQuery { Id = id });
-        if (result.Success)
-        {
-            var taskToDoModel = result.Value.Adapt<TaskToDoModel>();
-            return Ok(taskToDoModel);
-        }
-        return BadRequest(result.Error);
+        return Ok(result.Value);
     }
 
     [HttpPost]

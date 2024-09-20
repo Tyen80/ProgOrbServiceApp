@@ -1,15 +1,14 @@
 ﻿using ServiceApp.Application.Tasks;
-using ServiceApp.Domain.Abstractions;
 using ServiceApp.WebUI.Client.Features.Tasks;
 
 namespace ServiceApp.WebUI.Client.Services.TaskService;
 
 public interface ITaskService
 {
-    Task<Result<List<TaskResponse>>> GetAllTasks();
-    Task<Result<List<TaskResponse>>> GetAllTasksByUserId();
-    Task<Result<TaskToDoModel?>> GetTaskById(int id);
-    Task<Result> CreateTask(TaskToDoModel task);
-    Task<Result<TaskToDoModel>> UpdateTask(TaskToDoModel task);
+    Task<List<TaskResponse>> GetAllTasks();
+    Task<List<TaskResponse>> GetAllTasksByUserId();
+    Task<TaskResponse?> GetTaskById(int id);
+    Task CreateTask(TaskToDoModel task);
+    Task<TaskToDoModel> UpdateTask(TaskToDoModel task);
     Task<bool> DeleteTask(int id);
 }

@@ -1,5 +1,4 @@
 ﻿using ServiceApp.Application.Tasks;
-using ServiceApp.Domain.Abstractions;
 using ServiceApp.WebUI.Client.Features.Tasks;
 using System.Net.Http.Json;
 
@@ -14,53 +13,40 @@ public class TaskService : ITaskService
         _httpClient = httpClient;
     }
 
-    public async Task<Result<List<TaskResponse>>> GetAllTasks()
+    public async Task<List<TaskResponse>> GetAllTasks()
     {
         var response = await _httpClient.GetFromJsonAsync<List<TaskResponse>>("api/task");
-        if (response == null)
-        {
-            return Result.Fail<List<TaskResponse>>("Tasks not found");
-        }
-        return Result.Ok(response);
+        return response ?? new List<TaskResponse>();
     }
-    public async Task<Result<List<TaskResponse>>> GetAllTasksByUserId()
+    public async Task<List<TaskResponse>> GetAllTasksByUserId()
     {
         var response = await _httpClient.GetFromJsonAsync<List<TaskResponse>>("api/task/user");
-        if (response == null)
-        {
-            return Result.Fail<List<TaskResponse>>("Tasks not found");
-        }
-        return Result.Ok(response);
+        return response ?? new List<TaskResponse>();
     }
 
-    public async Task<Result<TaskToDoModel?>> GetTaskById(int id)
+    public async Task<TaskResponse?> GetTaskById(int id)
     {
-        var response = await _httpClient.GetFromJsonAsync<TaskToDoModel>($"api/task/{id}");
-        if (response == null)
-        {
-            return Result.Fail<TaskToDoModel?>($"Task with id {id} not found");
-        }
-        return Result.Ok<TaskToDoModel?>(response);
+        var response = await _httpClient.GetFromJsonAsync<TaskResponse>($"api/task/{id}");
+        return response;
     }
 
-    public async Task<Result> CreateTask(TaskToDoModel task)
+    public async Task CreateTask(TaskToDoModel task)
     {
         var response = await _httpClient.PostAsJsonAsync("api/task", task);
-        if (response.IsSuccessStatusCode)
+        if (response == null)
         {
-            return Result.Ok();
+            throw new Exception("Failed to create the task");
         }
-        return Result.Fail("Failed to create the task");
     }
 
-    public async Task<Result<TaskToDoModel>> UpdateTask(TaskToDoModel task)
+    public async Task<TaskToDoModel> UpdateTask(TaskToDoModel task)
     {
         var response = await _httpClient.PutAsJsonAsync($"api/task/{task.Id}", task);
-        if (response.IsSuccessStatusCode)
+        if (response == null)
         {
-            return Result.Ok(task);
+            throw new Exception("Failed to update the task");
         }
-        return Result.Fail<TaskToDoModel>("Failed to update the task");
+        return task;
     }
 
     public async Task<bool> DeleteTask(int id)
@@ -68,6 +54,5 @@ public class TaskService : ITaskService
         var response = await _httpClient.DeleteAsync($"api/task/{id}");
         return response.IsSuccessStatusCode;
     }
-
 
 }
